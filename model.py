@@ -7,8 +7,4 @@ import math as m
 # modèle de champs 
 
 
-
-
-s
-
 # modèle markovien
