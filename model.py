@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from math import sqrt
 
 # Le syst diffs
 def f(rho, t, lambda_a, lambda_b, lambda_a_delta, epsilon_ab):
@@ -18,7 +19,7 @@ def f(rho, t, lambda_a, lambda_b, lambda_a_delta, epsilon_ab):
 lambda_b = 0.8
 lambda_a_delta = 2.5
 
-rho0 = [0.02, 0.02, 0.01]
+rho0 = [0.5, 0.5, 0.25]
 
 # Le truc qui résoud
 def solve_system(lambda_a, lambda_b, lambda_a_delta, epsilon_ab):
@@ -62,7 +63,7 @@ def plot_rho_lambda_epsilon(lambda_a_values, epsilon_ab_values):
             rho_b_tot_asymptote_grid[i, j] = rho_b_tot_asymptote
         print(i)
     # Représenter graphiquement la valeur de rho_b_tot_asymptote pour chaque point de la grille en utilisant une carte de couleurs
-    plt.pcolormesh(lambda_a_grid, epsilon_ab_grid, np.max(rho_b_tot_asymptote_grid)-rho_b_tot_asymptote_grid, cmap='Blues')
+    plt.pcolormesh(lambda_a_grid, epsilon_ab_grid, rho_b_tot_asymptote_grid, cmap='Oranges_r')
     plt.colorbar(label=r'$\rho_{B,tot}^{asymptote}$')
     plt.xlabel(r'$\lambda_A$')
     plt.ylabel(r'$\epsilon_{AB}$')
@@ -71,11 +72,51 @@ def plot_rho_lambda_epsilon(lambda_a_values, epsilon_ab_values):
 
 def graph_type2() :
 
-    lambda_a_values = np.linspace(0.5, 1.25, 100)
-    epsilon_ab_values = np.linspace(1.3, 1.6, 100)
+    lambda_a_values = np.linspace(0.5,1.25, 100)
+    epsilon_ab_values = np.linspace(1.3, 1.9, 100)
     plot_rho_lambda_epsilon(lambda_a_values, epsilon_ab_values)
 
 
-graph_type2()
+
+def epsilon_critique_ab_moins_1(lambda_a_delta, lambda_b) :
+
+    if lambda_b >1 :
+        return(0)
+
+    else :
+        return((sqrt(lambda_a_delta)-lambda_b)/(lambda_b*(sqrt(lambda_a_delta)-1))-1)
+
+
+
+def graph_type3() :
+
+
+    x = np.linspace(0, 4, 100)
+    y = np.linspace(1, 4, 100)
+    X, Y = np.meshgrid(x, y)
+
+
+    epsilon_grid = np.zeros_like(X)
+
+
+    cmap = plt.get_cmap('Greens')
+
+
+    for i , val_i in  enumerate(x) :
+        for j, val_j in enumerate(y) :
+            epsilon_grid[i, j] = epsilon_critique_ab_moins_1(val_i, val_j)
+
+    plt.pcolormesh(X, Y, epsilon_grid, cmap='Oranges_r')
+
+
+
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.colorbar()
+
+    plt.show()
+
+
+
 
 
